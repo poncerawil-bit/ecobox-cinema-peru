@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { QrReader } from 'react-qr-reader';
+import QrScanner from 'react-qr-scanner';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, addDoc } from 'firebase/firestore';
@@ -232,18 +232,14 @@ export default function App(){
             <div className="bg-white p-4 rounded shadow max-w-md mx-auto">
               <p className="text-sm text-gray-600">Apunta la cámara al código QR del ticket.</p>
               <div className="mt-3 border rounded overflow-hidden">
-                <QrReader
-                  onResult={(result, error) => {
-                    if (!!result) {
-                      handleScan(result?.text);
-                    }
-                    if (!!error) {
-                      // ignore continuous errors
-                    }
-                  }}
-                  constraints={{ facingMode: 'environment' }}
-                  style={{ width: '100%' }}
-                />
+                <QrScanner
+  delay={300}
+  onError={(error) => console.error(error)}
+  onScan={(result) => {
+    if (result) handleScan(result.text || result);
+  }}
+  style={{ width: '100%' }}
+/>
               </div>
               <div className="mt-3 text-sm text-gray-500">Último escaneo: {scanResult || '—'}</div>
             </div>
